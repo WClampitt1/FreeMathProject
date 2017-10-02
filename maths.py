@@ -139,5 +139,10 @@ class Matrix:
         return Matrix(matrix_name, mat)
 
 
+class Vector(Matrix):
+    def test(self):
+        pass
+
+
 
 
