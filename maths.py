@@ -73,7 +73,7 @@ class Matrix:
     # objects.
     # function returns C as a matrix object
     @staticmethod
-    def mat_multiply(A, B, C):  # matrix multiplication
+    def mat_multiply(A, B, C, show_percent_complete=False):  # matrix multiplication
         m, n = A.size()
         p, q = B.size()
         new_matrix = []
@@ -97,6 +97,8 @@ class Matrix:
                     i += 1
                     j += 1
                 new_matrix[rows].append(tmp)
+            if show_percent_complete:
+                print((rows/m)*100)
 
         return Matrix(C, new_matrix)
 
