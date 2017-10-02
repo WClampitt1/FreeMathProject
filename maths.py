@@ -6,6 +6,7 @@
 #  demonstrated by the display method, which needs such information for clarity).
 # *The Matrix class is really just a wrapper for a python list, used to make matrix
 #  operations simpler.
+from random import randint
 
 
 class Matrix:
@@ -16,9 +17,15 @@ class Matrix:
     def get_name(self):
         return self.name
 
-    def display(self, outer_call=True):
+    def display(self, suppress_output=False):
         largest_elem_len = 1
-        printable_matrix = '\t'
+        # All of the `if not suppress_output:` business basically
+        # strips all of the print formatting from the string, so that it easier to work with
+        # for mechanical purposes. It leaves the correct spacing, but removes tabs and name printings
+        if not suppress_output:
+            printable_matrix = '\t'
+        else:
+            printable_matrix = ''
         for row in self.matrix:
             for col in row:
                 if len(str(col)) > largest_elem_len:
@@ -26,8 +33,11 @@ class Matrix:
         for i in self.matrix:
             for k in i:
                 printable_matrix += (str(k) + '  ' + (largest_elem_len - len(str(k))) * ' ')
-            printable_matrix += '\n\t'
-        if outer_call:
+            if not suppress_output:
+                printable_matrix += '\n\t'
+            else:
+                printable_matrix += '\n'
+        if not suppress_output:
             print(self.name + ' = (\n' + printable_matrix + '\b\b\b\b)\n')
         else:
             return printable_matrix
@@ -38,10 +48,23 @@ class Matrix:
     def get_elem(self, i, j):
         return self.matrix[i-1][j-1]
 
-    def write_out(self, file_name):
-        writable_matrix = self.display(False)
+    def write_out(self, file_name=''):  # defaults to writing matrix to it's own file based on its name
+        if file_name == '':
+            file_name = self.name + '.dat'
+        writable_matrix = self.display(suppress_output=True)
         with open(file_name, 'w', encoding='utf-8') as f:
             f.write(writable_matrix)
+
+    @staticmethod
+    def import_matrix(new_mat_name, file_name):
+        mat = []
+        with open(file_name, 'r', encoding='utf-8') as f:
+            for line in f:
+                mat.append(line.split())
+        for m in range(len(mat)):
+            for n in range(len(mat[m])):
+                mat[m][n] = int(mat[m][n])
+        return Matrix(new_mat_name, mat)
 
     # A, B are matrices; C is a string, naming A*B. It should be the same name
     # as a string that the programmer wants the matrix to be named in his program.
@@ -77,6 +100,15 @@ class Matrix:
 
         return Matrix(C, new_matrix)
 
+    # get a matrix of predefined size of random integers
+    @staticmethod
+    def gen_rand_int_matrix(matrix_name, rows, columns, rand_min, rand_max):
+        mat = []
+        for i in range(rows):
+            mat.append([])
+            for j in range(columns):
+                mat[i].append(randint(rand_min, rand_max))
+        return Matrix(matrix_name, mat)
 
 
 
