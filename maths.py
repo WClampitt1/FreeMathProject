@@ -45,6 +45,9 @@ class Matrix:
     def size(self):
         return len(self.matrix), len(self.matrix[0])
 
+    # any internal, mechanical use of get_elem will likely need to send (row+1, column+1) to
+    # get actual elements, because the program is designed to operate on human use of indexing matrices
+    # at 1, 1 not 0, 0
     def get_elem(self, i, j):
         return self.matrix[i-1][j-1]
 
@@ -54,6 +57,19 @@ class Matrix:
         writable_matrix = self.display(suppress_output=True)
         with open(file_name, 'w', encoding='utf-8') as f:
             f.write(writable_matrix)
+
+    @staticmethod
+    def add_matrices(A, B, C):
+        m, n = A.size()
+        p, q = B.size()
+        if m != p or n != q:
+            raise IndexError('Matrices must be the same size!')
+        new_mat = []
+        for row in range(m):
+            new_mat.append([])
+            for col in range(n):
+                new_mat[row].append(A.get_elem(row+1, col+1) + B.get_elem(row+1, col+1))
+        return Matrix('C', new_mat)
 
     @staticmethod
     def import_matrix(new_mat_name, file_name):
@@ -101,6 +117,16 @@ class Matrix:
                 print((rows/m)*100)
 
         return Matrix(C, new_matrix)
+
+    @staticmethod
+    def scalar_multiply(A, c, B):
+        m, n = A.size()
+        new_mat = []
+        for row in range(m):
+            new_mat.append([])
+            for col in range(n):
+                new_mat[row].append(A.get_elem(row+1, col+1) * c)
+        return Matrix(B, new_mat)
 
     # get a matrix of predefined size of random integers
     @staticmethod
