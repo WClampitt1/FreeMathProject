@@ -17,7 +17,7 @@ class Matrix:
     def get_name(self):
         return self.name
 
-    def display(self, suppress_output=False):
+    def display(self, suppress_output=False, show_label=True):
         largest_elem_len = 1
         # All of the `if not suppress_output:` business basically
         # strips all of the print formatting from the string, so that it easier to work with
@@ -37,8 +37,10 @@ class Matrix:
                 printable_matrix += '\n\t'
             else:
                 printable_matrix += '\n'
-        if not suppress_output:
+        if not suppress_output and show_label:
             print(self.name + ' = (\n' + printable_matrix + '\b\b\b\b)\n')
+        if not suppress_output and not show_label:
+            print(printable_matrix)
         else:
             return printable_matrix
 
