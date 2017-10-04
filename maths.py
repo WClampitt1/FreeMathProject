@@ -151,11 +151,11 @@ class Matrix:
     # inherit Matrix
     @staticmethod
     def build(name, matrix):
-        print('build was called')
         if len(matrix) == 1 or len(matrix[0]) == 1:
             return Vector(name, matrix)
         else:
             return Matrix(name, matrix)
+
 
 # TODO
 # Vector class needs cross and dot product methods
