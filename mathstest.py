@@ -1,13 +1,15 @@
-from maths import Matrix
+from maths import Matrix, Vector
 
+# this is a comment
 
-# A = Matrix('A', [[1, 20000, 3], [4, 5, 6], [7, 8, 0]])
-
-Matrix.import_matrix('B', 'A.dat')
-
-A = Matrix.import_matrix('A', 'A.dat')
-
+A = Matrix('A', [[1, 2, 3],
+                 [4, 5, 6],
+                 [8, 9, 10]])
 A.display()
 
-B = Matrix.gen_rand_int_matrix('B', 4, 4, 0, 10)
-B.display()
+x = Vector('x', [[1],
+                 [2],
+                 [3]])
+x.display()
+b = Matrix.matrix_product(A, x, 'b')
+b.display()
