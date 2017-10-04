@@ -71,7 +71,7 @@ class Matrix:
             new_mat.append([])
             for col in range(n):
                 new_mat[row].append(A.get_elem(row+1, col+1) + B.get_elem(row+1, col+1))
-        return Matrix('C', new_mat)
+        return Matrix.build('C', new_mat)
 
     @staticmethod
     def import_matrix(new_mat_name, file_name):
@@ -82,7 +82,7 @@ class Matrix:
         for m in range(len(mat)):
             for n in range(len(mat[m])):
                 mat[m][n] = int(mat[m][n])
-        return Matrix(new_mat_name, mat)
+        return Matrix.build(new_mat_name, mat)
 
     # A, B are matrices; C is a string, naming A*B. It should be the same name
     # as a string that the programmer wants the matrix to be named in his program.
@@ -91,7 +91,7 @@ class Matrix:
     # objects.
     # function returns C as a matrix object
     @staticmethod
-    def mat_multiply(A, B, C, show_percent_complete=False):  # matrix multiplication
+    def matrix_product(A, B, C, show_percent_complete=False):  # matrix multiplication
         m, n = A.size()
         p, q = B.size()
         new_matrix = []
@@ -118,27 +118,37 @@ class Matrix:
             if show_percent_complete:
                 print((rows/m)*100)
 
-        return Matrix(C, new_matrix)
+        return Matrix.build(C, new_matrix)
 
     @staticmethod
-    def scalar_multiply(A, c, B):
+    def scalar_product(A, c, B):
         m, n = A.size()
         new_mat = []
         for row in range(m):
             new_mat.append([])
             for col in range(n):
                 new_mat[row].append(A.get_elem(row+1, col+1) * c)
-        return Matrix(B, new_mat)
+        return Matrix.build(B, new_mat)
 
     # get a matrix of predefined size of random integers
     @staticmethod
-    def gen_rand_int_matrix(matrix_name, rows, columns, rand_min, rand_max):
+    def random_integer_matrix(matrix_name, rows, columns, rand_min, rand_max):
         mat = []
         for i in range(rows):
             mat.append([])
             for j in range(columns):
                 mat[i].append(randint(rand_min, rand_max))
-        return Matrix(matrix_name, mat)
+        return Matrix.build(matrix_name, mat)
+
+    # this is to keep consistency among object types, while still being able to let vectors
+    # inherit Matrix
+    @staticmethod
+    def build(name, matrix):
+        print('build was called')
+        if len(matrix) == 1 or len(matrix[0]) == 1:
+            return Vector(name, matrix)
+        else:
+            return Matrix(name, matrix)
 
 
 class Vector(Matrix):
