@@ -98,7 +98,7 @@ class Matrix:
     # objects.
     # function returns C as a matrix object
     @staticmethod
-    def matrix_product(A, B, C, show_percent_complete=False):  # matrix multiplication
+    def matrix_product(A, B, C, show_percent_complete=False, vector=False):  # matrix multiplication
         m, n = A.size()
         p, q = B.size()
         new_matrix = []
@@ -125,7 +125,10 @@ class Matrix:
             if show_percent_complete:
                 print((rows/m)*100)
 
-        return Matrix.build(C, new_matrix)
+        if vector:
+            return new_matrix[0][0]
+        else:
+            return Matrix.build(C, new_matrix)
 
     @staticmethod
     def scalar_product(A, c, B):
@@ -160,9 +163,20 @@ class Matrix:
 # TODO
 # Vector class needs cross and dot product methods
 class Vector(Matrix):
-    def test(self):
-        pass
 
+    @staticmethod
+    def dot(a, b, w):
+        u = [[]]
+        v = []
+        for row in a.matrix:
+            for col in row:
+                u[0].append(col)
+        for row in b.matrix:
+            for col in row:
+                v.append([col])
+        q = Vector.build(a.get_name(), u)
+        p = Vector.build(b.get_name(), v)
+        return Vector.matrix_product(q, p, w, vector=True)
 
 
 
