@@ -46,7 +46,7 @@ class Matrix:
                 printable_matrix += '\n'
         if not suppress_output and show_label:
             print(self.name + ' = (\n' + printable_matrix + '\b\b\b\b)\n')
-        if not suppress_output and not show_label:
+        elif not suppress_output and not show_label:
             print(printable_matrix)
         else:
             return printable_matrix
