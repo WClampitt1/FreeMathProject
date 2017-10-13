@@ -1,15 +1,9 @@
-from maths import Matrix, Vector
+from freemath import Matrix, Vector
 
-# this is a comment
-
-A = Matrix('A', [[1, 2, 3],
-                 [4, 5, 6],
-                 [8, 9, 10]])
-A.display()
-
-x = Vector('x', [[1],
-                 [2],
-                 [3]])
-x.display()
-b = Matrix.matrix_product(A, x, 'b')
-b.display()
+B = [[-1, 1, -1, 1, 1], [0, 0, 0, 1, 1], [1, 1, 1, 1, 3], [8, 4, 2, 1, 1]]
+R = B
+Bdawg = Matrix.row_reduce(R)
+M = Matrix('M', B)
+N = Matrix('N', Bdawg)
+M.display()
+N.display()
