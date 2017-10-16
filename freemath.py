@@ -9,64 +9,7 @@
 from random import randint
 
 
-# TODO
-# * Matrix needs to be able to generate an nxn identity matrix
-# * needs to be able to return echelon form and reduced echelon forms
-#   I think that ef() and ref() should be non-static, so it should take
-#   the name of the new matrix, and return the ef or ref of the matrix
-#   instance calling it. So for some nxm matrix A,
-#       B = A.ref('B') or B = A.ef('B')
-class Matrix:
-    def __init__(self, name, matrix):
-        self.name = name
-        self.matrix = matrix
-
-    def get_name(self):
-        return self.name
-
-    def display(self, suppress_output=False, show_label=True):
-        largest_elem_len = 1
-        # All of the `if not suppress_output:` business basically
-        # strips all of the print formatting from the string, so that it easier to work with
-        # for mechanical purposes. It leaves the correct spacing, but removes tabs and name printings
-        if not suppress_output:
-            printable_matrix = '\t'
-        else:
-            printable_matrix = ''
-        for row in self.matrix:
-            for col in row:
-                if len(str(col)) > largest_elem_len:
-                    largest_elem_len = len(str(col))
-        for i in self.matrix:
-            for k in i:
-                printable_matrix += (str(k) + '  ' + (largest_elem_len - len(str(k))) * ' ')
-            if not suppress_output:
-                printable_matrix += '\n\t'
-            else:
-                printable_matrix += '\n'
-        if not suppress_output and show_label:
-            print(self.name + ' = (\n' + printable_matrix + '\b\b\b\b)\n')
-        elif not suppress_output and not show_label:
-            print(printable_matrix)
-        else:
-            return printable_matrix
-
-    def size(self):
-        return len(self.matrix), len(self.matrix[0])
-
-    # any internal, mechanical use of get_elem will likely need to send (row+1, column+1) to
-    # get actual elements, because the program is designed to operate on human use of indexing matrices
-    # at 1, 1 not 0, 0
-    def get_elem(self, i, j):
-        return self.matrix[i-1][j-1]
-
-    def write_out(self, file_name=''):  # defaults to writing matrix to it's own file based on its name
-        if file_name == '':
-            file_name = self.name + '.dat'
-        writable_matrix = self.display(suppress_output=True)
-        with open(file_name, 'w', encoding='utf-8') as f:
-            f.write(writable_matrix)
-
+class MatrixOperations:
     @staticmethod
     def add_matrices(A, B, C):
         m, n = A.size()
@@ -158,6 +101,67 @@ class Matrix:
             return Vector(name, matrix)
         else:
             return Matrix(name, matrix)
+
+
+# TODO
+# * needs to be able to return echelon form and reduced echelon forms
+#   I think that ef() and ref() should be non-static, so it should take
+#   the name of the new matrix, and return the ef or ref of the matrix
+#   instance calling it. So for some nxm matrix A,
+#       B = A.ref('B') or B = A.ef('B')
+class Matrix(MatrixOperations):
+    def __init__(self, name, matrix):
+        self.name = name
+        self.matrix = matrix
+
+    def get_name(self):
+        return self.name
+
+    def display(self, suppress_output=False, show_label=True):
+        largest_elem_len = 1
+        # All of the `if not suppress_output:` business basically
+        # strips all of the print formatting from the string, so that it easier to work with
+        # for mechanical purposes. It leaves the correct spacing, but removes tabs and name printings
+        if not suppress_output:
+            printable_matrix = '\t'
+        else:
+            printable_matrix = ''
+        for row in self.matrix:
+            for col in row:
+                if len(str(col)) > largest_elem_len:
+                    largest_elem_len = len(str(col))
+        for i in self.matrix:
+            for k in i:
+                printable_matrix += (str(k) + '  ' + (largest_elem_len - len(str(k))) * ' ')
+            if not suppress_output:
+                printable_matrix += '\n\t'
+            else:
+                printable_matrix += '\n'
+        if not suppress_output and show_label:
+            print(self.name + ' = (\n' + printable_matrix + '\b\b\b\b)\n')
+        elif not suppress_output and not show_label:
+            print(printable_matrix)
+        else:
+            return printable_matrix
+
+    def size(self):
+        return len(self.matrix), len(self.matrix[0])
+
+    # any internal, mechanical use of get_elem will likely need to send (row+1, column+1) to
+    # get actual elements, because the program is designed to operate on human use of indexing matrices
+    # at 1, 1 not 0, 0
+    def get_elem(self, i, j):
+        return self.matrix[i-1][j-1]
+
+    def write_out(self, file_name=''):  # defaults to writing matrix to it's own file based on its name
+        if file_name == '':
+            file_name = self.name + '.dat'
+        writable_matrix = self.display(suppress_output=True)
+        with open(file_name, 'w', encoding='utf-8') as f:
+            f.write(writable_matrix)
+
+
+
 
 
 # TODO
