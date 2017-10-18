@@ -11,7 +11,7 @@ from random import randint
 
 class MatrixOperations:
     @staticmethod
-    def add_matrices(A, B, C):
+    def add_matrices(A, B, name=''):
         m, n = A.size()
         p, q = B.size()
         if m != p or n != q:
@@ -21,10 +21,10 @@ class MatrixOperations:
             new_mat.append([])
             for col in range(n):
                 new_mat[row].append(A.get_elem(row+1, col+1) + B.get_elem(row+1, col+1))
-        return Matrix.build('C', new_mat)
+        return Matrix.build(name, new_mat)
 
     @staticmethod
-    def import_matrix(new_mat_name, file_name):
+    def import_matrix(file_name, new_mat_name=''):
         mat = []
         with open(file_name, 'r', encoding='utf-8') as f:
             for line in f:
@@ -41,7 +41,7 @@ class MatrixOperations:
     # objects.
     # function returns C as a matrix object
     @staticmethod
-    def matrix_product(A, B, C, show_percent_complete=False, vector=False):  # matrix multiplication
+    def matrix_product(A, B, C='', show_percent_complete=False, vector=False):  # matrix multiplication
         m, n = A.size()
         p, q = B.size()
         new_matrix = []
@@ -74,7 +74,7 @@ class MatrixOperations:
             return Matrix.build(C, new_matrix)
 
     @staticmethod
-    def scalar_product(A, c, B):
+    def scalar_product(A, c, B=''):
         m, n = A.size()
         new_mat = []
         for row in range(m):
@@ -160,8 +160,14 @@ class Matrix(MatrixOperations):
         with open(file_name, 'w', encoding='utf-8') as f:
             f.write(writable_matrix)
 
+    def power(self, num, name=''):
+        tmp = self
+        for i in range(num - 1):
+            tmp = Matrix.matrix_product(tmp, self, name)  # order shouldn't matter
+        return tmp
 
-
+    def get_list(self):
+        return self.matrix
 
 
 # TODO
