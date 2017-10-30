@@ -158,21 +158,14 @@ class Matrix(MatrixOperations):
                 else:
                     count += 1
             elif A[row][col] == 1:
-                x = row + 1
-                while x < len(A):
+                for x in range(row + 1, len(A)):
                     row_op = [-A[x][col] * i for i in A[row]]
-                    y = 0
-                    while y < len(A[x]):
-                        A[x][y] += row_op[y]
-                        y += 1
-                    x += 1
+                    A[x] = [row_op[i] + A[x][i] for i in range(len(A[x]))]
                 col += 1
                 row += 1
             else:
                 A[row] = [x / A[row][col] for x in A[row]]
-
-        new_matrix = Matrix(self.name, A)
-        return new_matrix
+        return Matrix(self.name, A)
 
     def size(self):
         return len(self.matrix), len(self.matrix[0])
