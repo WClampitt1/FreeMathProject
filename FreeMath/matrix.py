@@ -164,7 +164,8 @@ class Matrix(MatrixOperations):
                 col += 1
                 row += 1
             else:
-                A[row] = [x / A[row][col] for x in A[row]]
+                A[row] = [x / abs(A[row][col]) if x == 0 else x/A[row][col] for x in A[row]]
+
         return Matrix(self.name, A)
 
     def size(self):
