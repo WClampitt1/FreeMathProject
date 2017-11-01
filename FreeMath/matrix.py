@@ -166,7 +166,19 @@ class Matrix(MatrixOperations):
             else:
                 A[row] = [x / abs(A[row][col]) if x == 0 else x/A[row][col] for x in A[row]]
 
-        return Matrix(self.name, A)
+        return Matrix.build(self.name, A)
+
+    # returns the reduced row echelon form of the matrix
+    def rref(self):
+        A = self.ref().matrix
+        for x in range(len(A)):
+            row = 0
+            while row != x:
+                row_op = [-A[row][x] * i for i in A[x]]
+                A[row] = [row_op[i] + A[row][i] for i in range(len(A[row]))]
+                row += 1
+
+        return Matrix.build(self.name, A)
 
     def size(self):
         return len(self.matrix), len(self.matrix[0])
