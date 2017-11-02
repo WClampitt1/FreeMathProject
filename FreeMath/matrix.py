@@ -145,13 +145,16 @@ class Matrix(MatrixOperations):
         else:
             return printable_matrix
 
-    # returns the row echelon form of the matrix
-    def ref(self):
+    # returns the row echelon form of the matrix. If det_output is True, function also returns det_op
+    # which can be used to compute the determinate
+    def ef(self, name=None, det_output=False):
         A = deepcopy(self.matrix)
         row, col, count = 0, 0, 0
+        det_op = 1
         while row != len(A) and col != len(A[row]):
             if A[row][col] == 0:
                 A.append(A.pop(row))
+                det_op *= -1
                 if count == len(A) - 1:
                     col += 1
                     count = 0
@@ -164,21 +167,43 @@ class Matrix(MatrixOperations):
                 col += 1
                 row += 1
             else:
+                det_op *= A[row][col]
                 A[row] = [x / abs(A[row][col]) if x == 0 else x/A[row][col] for x in A[row]]
-
-        return Matrix.build(self.name, A)
+        if name is None:
+            name = 'ref(' + self.name + ')'
+        if det_output:
+            return Matrix.build(name, A), det_op
+        else:
+            return Matrix.build(name, A)
 
     # returns the reduced row echelon form of the matrix
-    def rref(self):
-        A = self.ref().matrix
+    def ref(self, name=None):
+        A = self.ef().matrix
         for x in range(len(A)):
-            row = 0
-            while row != x:
+            for row in range(x):
                 row_op = [-A[row][x] * i for i in A[x]]
                 A[row] = [row_op[i] + A[row][i] for i in range(len(A[row]))]
-                row += 1
+        if name is None:
+            name = 'rref(' + self.name + ')'
+        return Matrix.build(name, A)
 
-        return Matrix.build(self.name, A)
+    # returns the determinate of the matrix
+    def det(self):
+        if self.size()[0] != self.size()[1]:
+            raise IndexError('Cannot take the determinant of a non-square matrix!')
+        tmp, det_op = self.ef(det_output=True)
+        A = tmp.matrix
+        det = 1
+        for i in range(len(A) - 1):
+            det *= A[i][i]
+        return det * det_op
+
+    # returns true if matrix is invertable
+    def is_invert(self):
+        if self.size()[0] != self.size()[1] or self.det() == 0:
+            return False
+        else:
+            return True
 
     def size(self):
         return len(self.matrix), len(self.matrix[0])
