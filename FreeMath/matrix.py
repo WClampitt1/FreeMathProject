@@ -105,11 +105,8 @@ class MatrixOperations:
 
 
 # TODO
-# * needs to be able to return echelon form and reduced echelon forms
-#   I think that ef() and ref() should be non-static, so it should take
-#   the name of the new matrix, and return the ef or ref of the matrix
-#   instance calling it. So for some nxm matrix A,
-#       B = A.ref('B') or B = A.ef('B')
+# * solution needs to be found for ef() and ref() returning improperly rounded
+#   results.
 class Matrix(MatrixOperations):
     def __init__(self, name, matrix):
         self.name = name
