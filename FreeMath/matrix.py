@@ -198,6 +198,14 @@ class Matrix(MatrixOperations):
             det *= A[i][i]
         return det * det_op
 
+    # returns the transpose of the matrix
+    def transpose(self, name=None):
+        A = self.matrix
+        A = [[A[j][i] for j in range(len(A[i]))] for i in range(len(A))]
+        if name is None:
+            name = self.name + '^t'
+        return Matrix.build(name, A)
+
     # returns true if matrix is invertable
     def is_invert(self):
         if self.size()[0] != self.size()[1] or self.det() == 0:
