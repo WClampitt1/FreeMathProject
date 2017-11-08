@@ -103,6 +103,30 @@ class MatrixOperations:
         else:
             return Matrix(name, matrix)
 
+    # returns the identity matrix of specified size.
+    @staticmethod
+    def identity(length, name=None):
+        I = [[1 if i == j else 0 for j in range(length)] for i in range(length)]
+        if name is None:
+            name = 'I'
+        return Matrix.build(name, I)
+
+    # augments two different matrix object together
+    @staticmethod
+    def augment(A, B, name=None):
+        m, n = A.size()
+        p, q = B.size()
+        mat1 = A.matrix
+        mat2 = B.matrix
+        if m != p:
+            raise IndexError('Matrices must have the same amount of rows to augment')
+        for row in range(m):
+            for col in range(q):
+                mat1[row].append(mat2[row][col])
+        if name is None:
+            name = '[' + A.get_name() + ' ' + B.get_name() + ']'
+        return Matrix.build(name, mat1)
+
 
 # TODO
 # * solution needs to be found for ef() and ref() returning improperly rounded
@@ -203,12 +227,23 @@ class Matrix(MatrixOperations):
             name = self.name + '^t'
         return Matrix.build(name, A)
 
-    # returns true if matrix is invertable
+    # returns true if matrix is invertible
     def is_invert(self):
         if self.size()[0] != self.size()[1] or self.det() == 0:
             return False
         else:
             return True
+
+    # returns the inverse of a matrix
+    def invert(self, name=None):
+        if self.is_invert() is False:
+            raise AttributeError('Matrix is not invertible')
+        I = Matrix.identity(self.size()[0])
+        AI = Matrix.augment(self, I).ref().matrix
+        inverse = [[AI[row][col] for col in range(self.size()[0], len(AI[row]))] for row in range(self.size()[0])]
+        if name is None:
+            name = self.name + '^-1'
+        return Matrix.build(name, inverse)
 
     def size(self):
         return len(self.matrix), len(self.matrix[0])
