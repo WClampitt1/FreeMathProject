@@ -7,6 +7,7 @@
 # *The Matrix class is really just a wrapper for a python list, used to make matrix
 #  operations simpler.
 from random import randint
+from copy import deepcopy
 
 
 class MatrixOperations:
@@ -102,13 +103,34 @@ class MatrixOperations:
         else:
             return Matrix(name, matrix)
 
+    # returns the identity matrix of specified size.
+    @staticmethod
+    def identity(length, name=None):
+        I = [[1 if i == j else 0 for j in range(length)] for i in range(length)]
+        if name is None:
+            name = 'I'
+        return Matrix.build(name, I)
+
+    # augments two different matrix object together
+    @staticmethod
+    def augment(A, B, name=None):
+        m, n = A.size()
+        p, q = B.size()
+        mat1 = A.matrix
+        mat2 = B.matrix
+        if m != p:
+            raise IndexError('Matrices must have the same amount of rows to augment')
+        for row in range(m):
+            for col in range(q):
+                mat1[row].append(mat2[row][col])
+        if name is None:
+            name = '[' + A.get_name() + ' ' + B.get_name() + ']'
+        return Matrix.build(name, mat1)
+
 
 # TODO
-# * needs to be able to return echelon form and reduced echelon forms
-#   I think that ef() and ref() should be non-static, so it should take
-#   the name of the new matrix, and return the ef or ref of the matrix
-#   instance calling it. So for some nxm matrix A,
-#       B = A.ref('B') or B = A.ef('B')
+# * solution needs to be found for ef() and ref() returning improperly rounded
+#   results.
 class Matrix(MatrixOperations):
     def __init__(self, name, matrix):
         self.name = name
@@ -143,6 +165,85 @@ class Matrix(MatrixOperations):
             print(printable_matrix)
         else:
             return printable_matrix
+
+    # returns the row echelon form of the matrix. If det_output is True, function also returns det_op
+    # which can be used to compute the determinate
+    def ef(self, name=None, det_output=False):
+        A = deepcopy(self.matrix)
+        row, col, count = 0, 0, 0
+        det_op = 1
+        while row != len(A) and col != len(A[row]):
+            if A[row][col] == 0:
+                A.append(A.pop(row))
+                det_op *= -1
+                if count == len(A) - 1:
+                    col += 1
+                    count = 0
+                else:
+                    count += 1
+            elif A[row][col] == 1:
+                for x in range(row + 1, len(A)):
+                    row_op = [-A[x][col] * i for i in A[row]]
+                    A[x] = [row_op[i] + A[x][i] for i in range(len(A[x]))]
+                col += 1
+                row += 1
+            else:
+                det_op *= A[row][col]
+                A[row] = [x / abs(A[row][col]) if x == 0 else x/A[row][col] for x in A[row]]
+        if name is None:
+            name = 'ref(' + self.name + ')'
+        if det_output:
+            return Matrix.build(name, A), det_op
+        else:
+            return Matrix.build(name, A)
+
+    # returns the reduced row echelon form of the matrix
+    def ref(self, name=None):
+        A = self.ef().matrix
+        for x in range(len(A)):
+            for row in range(x):
+                row_op = [-A[row][x] * i for i in A[x]]
+                A[row] = [row_op[i] + A[row][i] for i in range(len(A[row]))]
+        if name is None:
+            name = 'rref(' + self.name + ')'
+        return Matrix.build(name, A)
+
+    # returns the determinate of the matrix
+    def det(self):
+        if self.size()[0] != self.size()[1]:
+            raise IndexError('Cannot take the determinant of a non-square matrix!')
+        tmp, det_op = self.ef(det_output=True)
+        A = tmp.matrix
+        det = 1
+        for i in range(len(A) - 1):
+            det *= A[i][i]
+        return det * det_op
+
+    # returns the transpose of the matrix
+    def transpose(self, name=None):
+        A = self.matrix
+        A = [[A[j][i] for j in range(len(A[i]))] for i in range(len(A))]
+        if name is None:
+            name = self.name + '^t'
+        return Matrix.build(name, A)
+
+    # returns true if matrix is invertible
+    def is_invert(self):
+        if self.size()[0] != self.size()[1] or self.det() == 0:
+            return False
+        else:
+            return True
+
+    # returns the inverse of a matrix
+    def invert(self, name=None):
+        if self.is_invert() is False:
+            raise AttributeError('Matrix is not invertible')
+        I = Matrix.identity(self.size()[0])
+        AI = Matrix.augment(self, I).ref().matrix
+        inverse = [[AI[row][col] for col in range(self.size()[0], len(AI[row]))] for row in range(self.size()[0])]
+        if name is None:
+            name = self.name + '^-1'
+        return Matrix.build(name, inverse)
 
     def size(self):
         return len(self.matrix), len(self.matrix[0])
