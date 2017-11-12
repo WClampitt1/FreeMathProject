@@ -205,7 +205,7 @@ class Matrix(MatrixOperations):
                 row_op = [-A[row][x] * i for i in A[x]]
                 A[row] = [row_op[i] + A[row][i] for i in range(len(A[row]))]
         if name is None:
-            name = 'rref(' + self.name + ')'
+            name = 'ref(' + self.name + ')'
         return Matrix.build(name, A)
 
     # returns the determinate of the matrix
@@ -288,3 +288,9 @@ class Vector(Matrix):
         q = Vector.build(a.get_name(), u)
         p = Vector.build(b.get_name(), v)
         return Vector.matrix_product(q, p, w, vector=True)
+'''
+    @staticmethod
+    def cross(a, b):
+        a.transpose()
+'''
+
