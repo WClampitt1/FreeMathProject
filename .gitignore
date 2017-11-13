@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /.idea
 /__pycache__
 /test.py
@@ -6,3 +7,12 @@
 /work.py
 /MatrixDatFiles
 
+=======
+/.idea
+/__pycache__
+/test.py
+/mathtest.py
+/FreeMath/__pycache__
+/work.py
+/MatrixDatFiles
+>>>>>>> add_type_hints
