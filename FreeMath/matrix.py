@@ -141,6 +141,8 @@ class MatrixOperations:
 # TODO
 # * solution needs to be found for ef() and ref() returning improperly rounded
 #   results.
+
+
 class Matrix(MatrixOperations):
     def __init__(self, name: str, matrix: List):
         self.name = name
@@ -197,11 +199,12 @@ class Matrix(MatrixOperations):
                     A[x] = [row_op[i] + A[x][i] for i in range(len(A[x]))]
                 col += 1
                 row += 1
+                count = 0
             else:
                 det_op *= A[row][col]
                 A[row] = [x / abs(A[row][col]) if x == 0 else x/A[row][col] for x in A[row]]
         if name is None:
-            name = 'ref(' + self.name + ')'
+            name = 'ef(' + self.name + ')'
         if det_output:
             return Matrix.build(name, A), det_op
         else:
