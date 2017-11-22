@@ -291,7 +291,7 @@ class Matrix(MatrixOperations):
 class Vector(Matrix):
 
     @staticmethod
-    def dot(A, B) -> scalar:
+    def dot(A: Vector, B: Vector) -> scalar:
         a_row, a_col = A.size()
         b_row, b_col = B.size()
         if a_row != 1:
@@ -300,5 +300,23 @@ class Vector(Matrix):
             B = B.transpose()
         dot = Matrix.matrix_product(A, B.transpose()).matrix[0][0]
         return dot
+
+    @staticmethod
+    def cross(A: Vector, B: Vector, name: str=None) -> Vector:
+        if A.size() == (3, 1) or A.size() == (1, 3):
+            if B.size() == (3, 1) or B.size() == (1, 3):
+                if A.size == (1, 3):
+                    A = A.transpose()
+                elif B.size == (1, 3):
+                    B = B.transpose()
+                u = A.matrix[0]
+                v = B.matrix[0]
+                cross = [u[1]*v[2] - u[2]*v[1], u[2]*v[0] - u[0]*v[2], u[0]*v[1] - u[1]*v[0]]
+        else:
+            raise IndexError('Vectors must be three dimensional to take the cross product.')
+        if name is None:
+            name = A.name + ' X ' + B.name
+        return Vector.build(name, [cross])
+
 
 
