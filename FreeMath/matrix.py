@@ -144,6 +144,7 @@ class MatrixOperations:
 
 
 class Matrix(MatrixOperations):
+
     def __init__(self, name: str, matrix: List):
         self.name = name
         self.matrix = matrix
@@ -235,7 +236,8 @@ class Matrix(MatrixOperations):
     # returns the transpose of the matrix
     def transpose(self, name: str=None) -> Matrix:
         A = self.matrix
-        A = [[A[col][row] for col in range(len(A[row]))] for row in range(len(A))]
+        row, col = self.size()
+        A = [[A[j][i] for j in range(row)] for i in range(col)]
         if name is None:
             name = self.name + '^t'
         return Matrix.build(name, A)
@@ -289,17 +291,14 @@ class Matrix(MatrixOperations):
 class Vector(Matrix):
 
     @staticmethod
-    def dot(A, B, name: str=None) -> scalar:
-        u = [[]]
-        v = []
-        for row in A.matrix:
-            for col in row:
-                u[0].append(col)
-        for row in B.matrix:
-            for col in row:
-                v.append([col])
-        q = Vector.build(A.get_name(), u)
-        p = Vector.build(B.get_name(), v)
-        if name is None:
-            name = 'dot(' + A.name + ', ' + B.name + ')'
-        return Vector.matrix_product(q, p, name, vector=True)
+    def dot(A, B) -> scalar:
+        a_row, a_col = A.size()
+        b_row, b_col = B.size()
+        if a_row != 1:
+            A = A.transpose()
+        if b_row != 1:
+            B = B.transpose()
+        dot = Matrix.matrix_product(A, B.transpose()).matrix[0][0]
+        return dot
+
+
